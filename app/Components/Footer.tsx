@@ -1,6 +1,14 @@
 // import Image from "next/image";
-"use client"
-import { Instagram, Linkedin, MapPin, Mail, Phone, Sparkles, Camera } from "lucide-react";
+"use client";
+import {
+  Instagram,
+  Linkedin,
+  MapPin,
+  Mail,
+  Phone,
+  Sparkles,
+  Camera,
+} from "lucide-react";
 import Link from "next/link";
 
 const Footer = () => {
@@ -35,11 +43,12 @@ const Footer = () => {
               </div>
             </Link>
             <p className="text-sm text-gray-400 max-w-xs leading-relaxed">
-              Creating stunning visual stories that captivate and inspire. Your vision, our expertise.
+              Creating stunning visual stories that captivate and inspire. Your
+              vision, our expertise.
             </p>
             {/* Social Icons */}
             <div className="flex gap-4 mt-2">
-              <Link 
+              <Link
                 href="mailto:contact@yourcompany.com"
                 className="group/social relative"
               >
@@ -47,9 +56,9 @@ const Footer = () => {
                   <Mail className="h-5 w-5 text-gray-400 transition-colors group-hover/social:text-purple-400" />
                 </div>
               </Link>
-              <a 
-                href="https://instagram.com" 
-                target="_blank" 
+              <a
+                href="https://instagram.com"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="group/social relative"
               >
@@ -57,9 +66,9 @@ const Footer = () => {
                   <Instagram className="h-5 w-5 text-gray-400 transition-colors group-hover/social:text-pink-400" />
                 </div>
               </a>
-              <a 
-                href="https://linkedin.com" 
-                target="_blank" 
+              <a
+                href="https://linkedin.com"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="group/social relative"
               >
@@ -80,12 +89,15 @@ const Footer = () => {
               {[
                 { name: "Home", href: "/app" },
                 { name: "About", href: "/about" },
+                { name: "Services", href: "/services" },
+                { name: "Blogs", href: "/blogs" },
+
                 { name: "Team", href: "/teams" },
                 { name: "Contact", href: "/contact" },
               ].map((link) => (
                 <li key={link.href} className="group/link">
-                  <Link 
-                    href={link.href} 
+                  <Link
+                    href={link.href}
                     className="flex items-center gap-2 text-gray-400 transition-all duration-300 hover:text-transparent hover:bg-gradient-to-r hover:from-purple-400 hover:to-pink-400 hover:bg-clip-text hover:translate-x-2"
                   >
                     <span className="h-1.5 w-1.5 rounded-full bg-gray-600 transition-all duration-300 group-hover/link:bg-gradient-to-r group-hover/link:from-purple-500 group-hover/link:to-pink-500 group-hover/link:w-6" />
@@ -109,8 +121,8 @@ const Footer = () => {
                 { name: "Refund Policy", href: "/refund-policy" },
               ].map((link) => (
                 <li key={link.href} className="group/link">
-                  <Link 
-                    href={link.href} 
+                  <Link
+                    href={link.href}
                     className="flex items-center gap-2 text-gray-400 transition-all duration-300 hover:text-transparent hover:bg-gradient-to-r hover:from-purple-400 hover:to-pink-400 hover:bg-clip-text hover:translate-x-2"
                   >
                     <span className="h-1.5 w-1.5 rounded-full bg-gray-600 transition-all duration-300 group-hover/link:bg-gradient-to-r group-hover/link:from-purple-500 group-hover/link:to-pink-500 group-hover/link:w-6" />
@@ -140,8 +152,8 @@ const Footer = () => {
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/30 transition-all duration-300 group-hover/contact:border-purple-500 group-hover/contact:shadow-lg group-hover/contact:shadow-purple-500/30">
                   <Mail className="h-5 w-5 text-purple-400" />
                 </div>
-                <a 
-                  href="mailto:contact@videostudio.com" 
+                <a
+                  href="mailto:contact@videostudio.com"
                   className="text-gray-400 transition-colors group-hover/contact:text-purple-400"
                 >
                   contact@videostudio.com
@@ -151,8 +163,8 @@ const Footer = () => {
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/30 transition-all duration-300 group-hover/contact:border-purple-500 group-hover/contact:shadow-lg group-hover/contact:shadow-purple-500/30">
                   <Phone className="h-5 w-5 text-purple-400" />
                 </div>
-                <a 
-                  href="tel:+919000000000" 
+                <a
+                  href="tel:+919000000000"
                   className="text-gray-400 transition-colors group-hover/contact:text-purple-400"
                 >
                   +91 90000 00000
@@ -177,8 +189,8 @@ const Footer = () => {
           <div className="text-center sm:text-left">
             <p className="text-sm text-gray-400">
               © {new Date().getFullYear()}{" "}
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent transition-all duration-300 hover:from-purple-300 hover:to-pink-300"
               >
                 MemoryLens
@@ -186,7 +198,9 @@ const Footer = () => {
               . All Rights Reserved.
             </p>
             <p className="text-xs text-gray-500 mt-1">
-              Crafted with <span className="text-pink-500 animate-pulse">♥</span> for creators
+              Crafted with{" "}
+              <span className="text-pink-500 animate-pulse">♥</span> for
+              creators
             </p>
           </div>
 

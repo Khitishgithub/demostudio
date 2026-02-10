@@ -36,7 +36,7 @@ const TopBar: React.FC = () => {
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-pink-500 rounded-full border-2 border-white"></div>
               </div>
-              <div className="hidden sm:block">
+              <div className="">
                 <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                   MemoryLens
                 </h1>
