@@ -2,29 +2,22 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff, Camera, Sparkles } from "lucide-react";
+import Image from "next/image";
 
 export default function LoginPage() {
   const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
   const [showOtp, setShowOtp] = useState(false);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  // Generate particles only on client side
-  const [particles] = useState(() =>
-    Array.from({ length: 20 }, () => ({
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      delay: `${Math.random() * 5}s`,
-      duration: `${15 + Math.random() * 10}s`,
-    })),
-  );
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,75 +29,10 @@ export default function LoginPage() {
     }
 
     setIsLoading(true);
-    // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
       setShowOtp(true);
     }, 1000);
-  };
-
-  const handleOtpChange = (index: number, value: string) => {
-    // Only allow numbers
-    if (value && !/^\d+$/.test(value)) return;
-
-    const newOtp = [...otp];
-    newOtp[index] = value.slice(-1); // Only take last digit
-    setOtp(newOtp);
-
-    // Auto-focus next input
-    if (value && index < 5) {
-      const nextInput = document.getElementById(`otp-${index + 1}`);
-      nextInput?.focus();
-    }
-  };
-
-  const handleOtpPaste = (e: React.ClipboardEvent) => {
-    e.preventDefault();
-    const pastedData = e.clipboardData.getData("text").trim();
-
-    // Only allow numbers
-    if (!/^\d+$/.test(pastedData)) return;
-
-    const digits = pastedData.slice(0, 6).split("");
-    const newOtp = [...otp];
-
-    digits.forEach((digit, index) => {
-      if (index < 6) {
-        newOtp[index] = digit;
-      }
-    });
-
-    setOtp(newOtp);
-
-    // Focus the next empty input or the last one
-    const nextEmptyIndex = newOtp.findIndex((d) => d === "");
-    const focusIndex = nextEmptyIndex === -1 ? 5 : nextEmptyIndex;
-    document.getElementById(`otp-${focusIndex}`)?.focus();
-  };
-
-  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
-    // Prevent non-numeric keys except special keys
-    if (
-      !/^\d$/.test(e.key) &&
-      !["Backspace", "Delete", "Tab", "ArrowLeft", "ArrowRight"].includes(e.key)
-    ) {
-      e.preventDefault();
-    }
-
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      const prevInput = document.getElementById(`otp-${index - 1}`);
-      prevInput?.focus();
-    }
-
-    if (e.key === "ArrowLeft" && index > 0) {
-      const prevInput = document.getElementById(`otp-${index - 1}`);
-      prevInput?.focus();
-    }
-
-    if (e.key === "ArrowRight" && index < 5) {
-      const nextInput = document.getElementById(`otp-${index + 1}`);
-      nextInput?.focus();
-    }
   };
 
   const handleOtpSubmit = () => {
@@ -119,244 +47,215 @@ export default function LoginPage() {
     }
   };
 
+  const handleOtpChange = (index: number, value: string) => {
+    if (value && !/^\d+$/.test(value)) return;
+    const newOtp = [...otp];
+    newOtp[index] = value.slice(-1);
+    setOtp(newOtp);
+
+    if (value && index < 5) {
+      document.getElementById(`otp-${index + 1}`)?.focus();
+    }
+  };
+
+  const handleOtpPaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData("text").trim();
+    if (!/^\d+$/.test(pasted)) return;
+
+    const digits = pasted.slice(0, 6).split("");
+    const newOtp = [...otp];
+    digits.forEach((d, i) => (newOtp[i] = d));
+    setOtp(newOtp);
+
+    const nextEmpty = newOtp.findIndex((d) => !d);
+    document.getElementById(`otp-${nextEmpty === -1 ? 5 : nextEmpty}`)?.focus();
+  };
+
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (
+      !/^\d$/.test(e.key) &&
+      !["Backspace", "Delete", "Tab", "ArrowLeft", "ArrowRight"].includes(e.key)
+    ) {
+      e.preventDefault();
+    }
+
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      document.getElementById(`otp-${index - 1}`)?.focus();
+    }
+    if (e.key === "ArrowLeft" && index > 0) {
+      document.getElementById(`otp-${index - 1}`)?.focus();
+    }
+    if (e.key === "ArrowRight" && index < 5) {
+      document.getElementById(`otp-${index + 1}`)?.focus();
+    }
+  };
+
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 px-4 py-12">
-      {/* Animated background elements */}
-      {/* Floating particles - only render after mount */}
-      {mounted &&
-        particles.map((particle, i) => (
-          <div
-            key={i}
-            className="pointer-events-none absolute h-1 w-1 rounded-full bg-purple-400 opacity-20"
-            style={{
-              left: particle.left,
-              top: particle.top,
-              animation: `float ${particle.duration} infinite ease-in-out`,
-              animationDelay: particle.delay,
-            }}
-          />
-        ))}
-
-      <style jsx>{`
-        @keyframes float {
-          0%,
-          100% {
-            transform: translate(0, 0) scale(1);
-          }
-          33% {
-            transform: translate(30px, -30px) scale(1.2);
-          }
-          66% {
-            transform: translate(-20px, 20px) scale(0.8);
-          }
-        }
-
-        @keyframes shimmer {
-          0% {
-            background-position: -1000px 0;
-          }
-          100% {
-            background-position: 1000px 0;
-          }
-        }
-
-        @keyframes pulse-glow {
-          0%,
-          100% {
-            box-shadow:
-              0 0 20px rgba(147, 51, 234, 0.3),
-              0 0 40px rgba(236, 72, 153, 0.2);
-          }
-          50% {
-            box-shadow:
-              0 0 30px rgba(147, 51, 234, 0.5),
-              0 0 60px rgba(236, 72, 153, 0.3),
-              0 0 80px rgba(147, 51, 234, 0.2);
-          }
-        }
-
-        .button-shimmer {
-          background: linear-gradient(
-            90deg,
-            rgba(147, 51, 234, 1) 0%,
-            rgba(236, 72, 153, 1) 50%,
-            rgba(147, 51, 234, 1) 100%
-          );
-          background-size: 200% 100%;
-          animation: shimmer 3s infinite linear;
-        }
-
-        .button-pulse {
-          animation: pulse-glow 2s infinite ease-in-out;
-        }
-      `}</style>
-
-      {/* Main card */}
-      <div className="relative w-full max-w-md">
-        <div className="absolute -inset-1 rounded-2xl bg-linear-to-r from-purple-600 to-pink-500 opacity-20 blur-xl"></div>
-        <div className="relative rounded-2xl border border-gray-700 bg-gray-800/90 p-8 shadow-2xl backdrop-blur-sm">
-          {/* Logo/Header */}
-          <div className="mb-8 text-center">
-            <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-purple-600 to-pink-500 shadow-lg">
-              <Camera className="h-8 w-8 text-white" />
-            </div>
-            <h1 className="mb-2 bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-3xl font-bold text-transparent">
-              Videography Studio
-            </h1>
-            <p className="flex items-center justify-center gap-2 text-gray-400">
-              <Sparkles className="h-4 w-4" />
-              Welcome back, creator!
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
+      <div className="mx-auto flex  max-w-6xl flex-col md:flex-row">
+        {/* LEFT SIDE IMAGE */}
+        <div className="relative hidden md:block md:w-1/2 mt-10 ">
+          <div className="absolute inset-0">
+            <Image
+              src="/Images/Login.jpg"
+              alt="Wedding"
+              fill
+              priority
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-black/50" />
           </div>
 
-          {!showOtp ? (
-            // Login Form
-            <form onSubmit={handleLogin} className="space-y-6">
-              {error && (
-                <div className="rounded-lg border border-red-500/50 bg-red-500/10 p-3 text-sm text-red-400">
-                  {error}
-                </div>
-              )}
+          {/* Decorative overlay */}
+          <div className="absolute inset-0 flex items-center justify-center ">
+            <div className="rounded-3xl border border-white/20 bg-white/5 p-8 backdrop-blur-md">
+              <h2 className="text-3xl font-bold text-white">
+                Welcome to <span className="text-purple-400">MemoryLens</span>
+              </h2>
+              <p className="mt-2 text-sm text-gray-200">
+                Capture the magic. Create the memories.
+              </p>
+            </div>
+          </div>
+        </div>
 
-              <div>
-                <label
-                  htmlFor="email"
-                  className="mb-2 block text-sm font-medium text-gray-300"
-                >
-                  Email address
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  required
-                  className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 text-white placeholder-gray-400 backdrop-blur-sm transition-all duration-300 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
-                  placeholder="creator@studio.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
+        {/* RIGHT SIDE FORM */}
+        <div className="relative w-full md:w-1/2 flex items-center justify-center px-6 mt-10 ">
+          <div className="relative w-full max-w-md rounded-2xl border border-gray-700 bg-gray-900/70 p-8 shadow-2xl backdrop-blur-sm">
+            <div className="text-center mb-8">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-600 to-pink-500 shadow-lg">
+                <Camera className="h-8 w-8 text-white" />
               </div>
+              <h1 className="text-3xl font-bold text-white">
+                Login to <span className="text-purple-400">MemoryLens</span>
+              </h1>
+              <p className="text-sm text-gray-400 mt-2">
+                Professional creators only
+              </p>
+            </div>
 
-              <div>
-                <label
-                  htmlFor="password"
-                  className="mb-2 block text-sm font-medium text-gray-300"
-                >
-                  Password
-                </label>
-                <div className="relative">
+            {!showOtp ? (
+              <form onSubmit={handleLogin} className="space-y-6">
+                {error && (
+                  <div className="rounded-lg border border-red-500/50 bg-red-500/10 p-3 text-sm text-red-400">
+                    {error}
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300">
+                    Email address
+                  </label>
                   <input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    type="email"
                     required
-                    className="w-full rounded-lg border border-gray-600 bg-gray-700/50 px-4 py-3 pr-12 text-white placeholder-gray-400 backdrop-blur-sm transition-all duration-300 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    className="mt-2 w-full rounded-lg border border-gray-700 bg-gray-800/50 px-4 py-3 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                    placeholder="creator@studio.com"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-purple-400"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5" />
-                    ) : (
-                      <Eye className="h-5 w-5" />
-                    )}
-                  </button>
                 </div>
-              </div>
 
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="button-shimmer button-pulse group relative w-full overflow-hidden rounded-lg py-3.5 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 cursor-pointer"
-              >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  {isLoading ? (
-                    <>
-                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                      Processing...
-                    </>
-                  ) : (
-                    "Login"
-                  )}
-                </span>
-              </button>
-            </form>
-          ) : (
-       
-            <form
-              className="space-y-6"
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleOtpSubmit();
-              }}
-            >
-              <div className="text-center">
-                <h2 className="mb-2 text-2xl font-bold text-white">
-                  Enter verification code
-                </h2>
-                <p className="text-sm text-gray-400">
-                  sent to
-                  <br />
-                  <span className="font-medium text-purple-400">{email}</span>
-                </p>
-              </div>
-
-              {error && (
-                <div className="rounded-lg border border-red-500/50 bg-red-500/10 p-3 text-sm text-red-400">
-                  {error}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300">
+                    Password
+                  </label>
+                  <div className="relative mt-2">
+                    <input
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      type={showPassword ? "text" : "password"}
+                      required
+                      className="w-full rounded-lg border border-gray-700 bg-gray-800/50 px-4 py-3 pr-12 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-purple-400"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-5 w-5" />
+                      ) : (
+                        <Eye className="h-5 w-5" />
+                      )}
+                    </button>
+                  </div>
                 </div>
-              )}
 
-              <div
-                className="flex justify-center gap-2"
-                onPaste={handleOtpPaste}
-              >
-                {otp.map((digit, index) => (
-                  <input
-                    key={index}
-                    id={`otp-${index}`}
-                    type="text"
-                    inputMode="numeric"
-                    pattern="\d*"
-                    maxLength={1}
-                    className="h-14 w-12 rounded-lg border border-gray-600 bg-gray-700/50 text-center text-xl font-semibold text-white backdrop-blur-sm transition-all duration-300 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:scale-110"
-                    value={digit}
-                    onChange={(e) => handleOtpChange(index, e.target.value)}
-                    onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                  />
-                ))}
-              </div>
-
-              <button
-                type="submit"
-                disabled={otp.some((d) => !d)}
-                className="button-shimmer button-pulse group relative w-full overflow-hidden rounded-lg py-3.5 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 cursor-pointer"
-              >
-                <span className="relative z-10">Verify & Login</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setShowOtp(false);
-                  setOtp(["", "", "", "", "", ""]);
-                  setError("");
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full rounded-lg bg-gradient-to-r from-purple-600 to-pink-500 py-3.5 text-white font-semibold shadow-lg hover:shadow-xl transition hover:scale-[1.02] disabled:opacity-50"
+                >
+                  {isLoading ? "Processing..." : "Login"}
+                </button>
+              </form>
+            ) : (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleOtpSubmit();
                 }}
-                className="w-full text-sm text-gray-400 transition-colors hover:text-purple-400 cursor-pointer"
+                className="space-y-6"
               >
-                ← Back to login
-              </button>
-            </form>
-          )}
+                <div className="text-center">
+                  <h2 className="text-2xl font-bold text-white">Enter OTP</h2>
+                  <p className="text-sm text-gray-400 mt-2">
+                    Sent to <span className="text-purple-400">{email}</span>
+                  </p>
+                </div>
 
-          {/* Footer */}
-          <div className="mt-8 text-center text-sm text-gray-400">
-            Don&apos;t have an account?{" "}
-            <button className="font-medium text-purple-400 transition-colors hover:text-purple-300">
-              Sign up
-            </button>
+                {error && (
+                  <div className="rounded-lg border border-red-500/50 bg-red-500/10 p-3 text-sm text-red-400">
+                    {error}
+                  </div>
+                )}
+
+                <div className="flex justify-center gap-2" onPaste={handleOtpPaste}>
+                  {otp.map((d, i) => (
+                    <input
+                      key={i}
+                      id={`otp-${i}`}
+                      value={d}
+                      onChange={(e) => handleOtpChange(i, e.target.value)}
+                      onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                      maxLength={1}
+                      inputMode="numeric"
+                      className="h-14 w-12 rounded-lg border border-gray-700 bg-gray-800/50 text-center text-xl font-semibold text-white focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                    />
+                  ))}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={otp.some((d) => !d)}
+                  className="w-full rounded-lg bg-gradient-to-r from-purple-600 to-pink-500 py-3.5 text-white font-semibold shadow-lg hover:shadow-xl transition hover:scale-[1.02] disabled:opacity-50"
+                >
+                  Verify & Login
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowOtp(false);
+                    setOtp(["", "", "", "", "", ""]);
+                    setError("");
+                  }}
+                  className="w-full text-sm text-gray-400 hover:text-purple-400 transition"
+                >
+                  ← Back to login
+                </button>
+              </form>
+            )}
+
+            <div className="mt-8 text-center text-sm text-gray-400">
+              Don&apos;t have an account?{" "}
+              <button className="font-medium text-purple-400 hover:text-purple-300">
+                Sign up
+              </button>
+            </div>
           </div>
         </div>
       </div>
