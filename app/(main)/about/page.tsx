@@ -83,7 +83,7 @@ const AboutPage = () => {
   return (
     <>
       {/* HERO SECTION */}
-      <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-24 md:py-32 text-white overflow-hidden">
+      <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-24  text-white overflow-hidden">
         {/* Animated background */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-0 right-1/4 h-96 w-96 rounded-full bg-purple-600 blur-3xl animate-pulse"></div>

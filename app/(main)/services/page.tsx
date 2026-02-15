@@ -182,7 +182,7 @@ const ServicesPage = () => {
   return (
     <>
       {/* HERO SECTION */}
-      <section className="relative bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 py-24 md:py-32 text-white overflow-hidden">
+      <section className="relative bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 py-24  text-white overflow-hidden">
         {/* Animated background */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-0 right-1/4 h-96 w-96 rounded-full bg-purple-600 blur-3xl animate-pulse"></div>
@@ -190,7 +190,7 @@ const ServicesPage = () => {
         </div>
 
         <div className="container mx-auto px-6 text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 mb-6 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 mb-6 animate-fade-in">
             <Sparkles className="h-4 w-4 text-purple-400" />
             <span className="text-sm text-purple-300">Our Services</span>
           </div>
